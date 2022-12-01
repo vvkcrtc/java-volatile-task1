@@ -37,9 +37,12 @@ public class Main {
         return true;
     }
 
+    static AtomicInteger countNicks3 = new AtomicInteger(0);
+    static AtomicInteger countNicks4 = new AtomicInteger(0);
+    static AtomicInteger countNicks5 = new AtomicInteger(0);
+
     static class CountNicks implements Callable<Integer> {
         int size;
-        AtomicInteger countNicks = new AtomicInteger(0);
 
         public CountNicks(int size) {
             this.size = size;
@@ -49,12 +52,23 @@ public class Main {
             for (int i = 0; i < texts.length; i++) {
                 if (texts[i].length() == size) {
                     if (isPalindrome(texts[i])) {
-                        countNicks.addAndGet(1);
+                        switch (size) {
+                            case 3:
+                                countNicks3.addAndGet(1);
+                                break;
+                            case 4:
+                                countNicks4.addAndGet(1);
+                                break;
+                            case 5:
+                                countNicks5.addAndGet(1);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
-            //System.out.println("Thread :"+size);
-            return countNicks.intValue();
+            return size;
         }
     }
 
@@ -84,12 +98,13 @@ public class Main {
 
         for (int t = 0; t < threads.size(); t++) {
             Future task = threads.get(t);
-            Integer result = (Integer) task.get();
-            System.out.println("Красивых слов с длиной " + (t + 3) + " шт " + result.intValue());
+            task.get();
         }
         threadPool.shutdown();
 
-
+        System.out.println("Красивых слов с длиной 3 шт " + countNicks3.intValue());
+        System.out.println("Красивых слов с длиной 4 шт " + countNicks4.intValue());
+        System.out.println("Красивых слов с длиной 5 шт " + countNicks5.intValue());
         System.out.println("Красивых слов всего " + countPal);
 
 
