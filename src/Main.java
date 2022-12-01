@@ -100,6 +100,7 @@ public class Main {
             Future task = threads.get(t);
             task.get();
         }
+
         threadPool.shutdown();
 
         System.out.println("Красивых слов с длиной 3 шт " + countNicks3.intValue());
