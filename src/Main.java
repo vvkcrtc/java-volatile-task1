@@ -18,10 +18,26 @@ public class Main {
         return text.toString();
     }
 
+    static boolean isIncChars(String word) {
+        int strCount = word.length() - 1;
+        int incCount = 0;
+        for (int i = 0; i < strCount; i++) {
+            if (word.charAt(i)<word.charAt(i+1)) {
+                incCount++;
+            }
+        }
+        if (incCount == strCount) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-    public static boolean isPalindrome(String word) {
+    static boolean isPalindrome(String word) {
         int i1 = 0;
         int i2 = word.length() - 1;
+
+
         while (i2 > i1) {
             if (word.charAt(i1) != word.charAt(i2)) {
                 return false;
@@ -29,12 +45,19 @@ public class Main {
             ++i1;
             --i2;
         }
-        for (i1 = 0; i1 < word.length() / 2; i1++) {
-            if (word.charAt(i1) > word.charAt(i1 + 1)) {
+        for (int i = 0; i < word.length() / 2; i++) {
+            if (word.charAt(i) > word.charAt(i + 1)) {
                 return false;
             }
         }
-        return true;
+         return true;
+    }
+
+    public static boolean isBeautifulNick(String word) {
+        if ( isPalindrome(word) || isIncChars(word) ) {
+            return true;
+        }
+        return false;
     }
 
     static AtomicInteger countNicks3 = new AtomicInteger(0);
@@ -51,7 +74,7 @@ public class Main {
         public Integer call() throws Exception {
             for (int i = 0; i < texts.length; i++) {
                 if (texts[i].length() == size) {
-                    if (isPalindrome(texts[i])) {
+                    if (isBeautifulNick(texts[i])) {
                         switch (size) {
                             case 3:
                                 countNicks3.addAndGet(1);
@@ -82,7 +105,7 @@ public class Main {
         int countPal = 0;
 
         for (String str : texts) {
-            if (isPalindrome(str) == true) {
+            if (isBeautifulNick(str) == true) {
                 System.out.println(str);
                 countPal++;
             }
