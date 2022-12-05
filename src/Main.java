@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+enum Checks {CHECK_POLINDROM, CHECK_INC}
 
 public class Main {
 
@@ -22,7 +23,7 @@ public class Main {
         int strCount = word.length() - 1;
         int incCount = 0;
         for (int i = 0; i < strCount; i++) {
-            if (word.charAt(i)<word.charAt(i+1)) {
+            if (word.charAt(i) < word.charAt(i + 1)) {
                 incCount++;
             }
         }
@@ -50,11 +51,11 @@ public class Main {
                 return false;
             }
         }
-         return true;
+        return true;
     }
 
     public static boolean isBeautifulNick(String word) {
-        if ( isPalindrome(word) || isIncChars(word) ) {
+        if (isPalindrome(word) || isIncChars(word)) {
             return true;
         }
         return false;
@@ -65,33 +66,34 @@ public class Main {
     static AtomicInteger countNicks5 = new AtomicInteger(0);
 
     static class CountNicks implements Callable<Integer> {
-        int size;
+        Checks checks;
 
-        public CountNicks(int size) {
-            this.size = size;
+        public CountNicks(Checks checks) {
+            this.checks = checks;
         }
 
         public Integer call() throws Exception {
             for (int i = 0; i < texts.length; i++) {
-                if (texts[i].length() == size) {
-                    if (isBeautifulNick(texts[i])) {
-                        switch (size) {
-                            case 3:
-                                countNicks3.addAndGet(1);
-                                break;
-                            case 4:
-                                countNicks4.addAndGet(1);
-                                break;
-                            case 5:
-                                countNicks5.addAndGet(1);
-                                break;
-                            default:
-                                break;
-                        }
+                if (checks == Checks.CHECK_POLINDROM && isPalindrome(texts[i]) ||
+                        checks == Checks.CHECK_INC && isIncChars(texts[i])) {
+
+                    switch (texts[i].length()) {
+                        case 3:
+                            countNicks3.addAndGet(1);
+                            break;
+                        case 4:
+                            countNicks4.addAndGet(1);
+                            break;
+                        case 5:
+                            countNicks5.addAndGet(1);
+                            break;
+                        default:
+                            break;
                     }
+
                 }
             }
-            return size;
+            return 0;
         }
     }
 
@@ -114,8 +116,8 @@ public class Main {
         List<Future> threads = new ArrayList<>();
         ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
-        for (int i = 0; i < 3; i++) {
-            Callable callable = new CountNicks(i + 3);
+        for (Checks ch : Checks.values()) {
+            Callable callable = new CountNicks(ch);
             threads.add(threadPool.submit(callable));
         }
 
@@ -130,6 +132,7 @@ public class Main {
         System.out.println("Красивых слов с длиной 4 шт " + countNicks4.intValue());
         System.out.println("Красивых слов с длиной 5 шт " + countNicks5.intValue());
         System.out.println("Красивых слов всего " + countPal);
+//        System.out.println(" " + (countNicks3.intValue()+countNicks4.intValue()+countNicks5.intValue()));
 
 
     }
