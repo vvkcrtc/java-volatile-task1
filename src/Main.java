@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-enum Checks {CHECK_POLINDROM, CHECK_INC}
+enum Checks {CHECK_PALINDROME, CHECK_INC}
 
 public class Main {
 
@@ -74,7 +74,7 @@ public class Main {
 
         public Integer call() throws Exception {
             for (int i = 0; i < texts.length; i++) {
-                if (checks == Checks.CHECK_POLINDROM && isPalindrome(texts[i]) ||
+                if (checks == Checks.CHECK_PALINDROME && isPalindrome(texts[i]) ||
                         checks == Checks.CHECK_INC && isIncChars(texts[i])) {
 
                     switch (texts[i].length()) {
