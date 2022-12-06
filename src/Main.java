@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-enum Checks {CHECK_PALINDROME, CHECK_INC}
+enum Checks {CHECK_PALINDROME, CHECK_INC, ONE_CHAR}
 
 public class Main {
 
@@ -17,6 +17,16 @@ public class Main {
             text.append(letters.charAt(random.nextInt(letters.length())));
         }
         return text.toString();
+    }
+
+    static boolean isOneChar(String word) {
+        char firstChar = word.charAt(0);
+        for (char c : word.toCharArray()) {
+            if (c != firstChar) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static boolean isIncChars(String word) {
@@ -38,6 +48,9 @@ public class Main {
         int i1 = 0;
         int i2 = word.length() - 1;
 
+        if (isOneChar(word)) {
+            return false;
+        }
 
         while (i2 > i1) {
             if (word.charAt(i1) != word.charAt(i2)) {
@@ -55,7 +68,7 @@ public class Main {
     }
 
     public static boolean isBeautifulNick(String word) {
-        if (isPalindrome(word) || isIncChars(word)) {
+        if (isPalindrome(word) || isIncChars(word) || isOneChar(word)) {
             return true;
         }
         return false;
@@ -75,7 +88,8 @@ public class Main {
         public Integer call() throws Exception {
             for (int i = 0; i < texts.length; i++) {
                 if (checks == Checks.CHECK_PALINDROME && isPalindrome(texts[i]) ||
-                        checks == Checks.CHECK_INC && isIncChars(texts[i])) {
+                        checks == Checks.CHECK_INC && isIncChars(texts[i]) ||
+                        checks == Checks.ONE_CHAR && isOneChar(texts[i])) {
 
                     switch (texts[i].length()) {
                         case 3:
@@ -132,7 +146,7 @@ public class Main {
         System.out.println("Красивых слов с длиной 4 шт " + countNicks4.intValue());
         System.out.println("Красивых слов с длиной 5 шт " + countNicks5.intValue());
         System.out.println("Красивых слов всего " + countPal);
-//        System.out.println(" " + (countNicks3.intValue()+countNicks4.intValue()+countNicks5.intValue()));
+//        System.out.println(" " + (countNicks3.intValue() + countNicks4.intValue() + countNicks5.intValue()));
 
 
     }
