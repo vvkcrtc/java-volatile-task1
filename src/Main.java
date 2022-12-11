@@ -32,8 +32,13 @@ public class Main {
     static boolean isIncChars(String word) {
         int strCount = word.length() - 1;
         int incCount = 0;
+
+        if (isOneChar(word)) {
+            return false;
+        }
+
         for (int i = 0; i < strCount; i++) {
-            if (word.charAt(i) < word.charAt(i + 1)) {
+            if (word.charAt(i) <= word.charAt(i + 1)) {
                 incCount++;
             }
         }
@@ -78,14 +83,14 @@ public class Main {
     static AtomicInteger countNicks4 = new AtomicInteger(0);
     static AtomicInteger countNicks5 = new AtomicInteger(0);
 
-    static class CountNicks implements Callable<Integer> {
+    static class CountNicks implements Runnable {
         Checks checks;
 
         public CountNicks(Checks checks) {
             this.checks = checks;
         }
 
-        public Integer call() throws Exception {
+        public void run() {
             for (int i = 0; i < texts.length; i++) {
                 if (checks == Checks.CHECK_PALINDROME && isPalindrome(texts[i]) ||
                         checks == Checks.CHECK_INC && isIncChars(texts[i]) ||
@@ -107,9 +112,12 @@ public class Main {
 
                 }
             }
-            return 0;
+
         }
     }
+
+
+
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 
@@ -127,26 +135,25 @@ public class Main {
             }
         }
 
-        List<Future> threads = new ArrayList<>();
-        ExecutorService threadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        List<Thread> threads = new ArrayList<>();
 
         for (Checks ch : Checks.values()) {
-            Callable callable = new CountNicks(ch);
-            threads.add(threadPool.submit(callable));
+            threads.add(new Thread(new CountNicks(ch)));
         }
 
-        for (int t = 0; t < threads.size(); t++) {
-            Future task = threads.get(t);
-            task.get();
+        for(Thread tr : threads) {
+            tr.start();
         }
 
-        threadPool.shutdown();
+        for(Thread tr : threads) {
+            tr.join();
+        }
 
         System.out.println("Красивых слов с длиной 3 шт " + countNicks3.intValue());
         System.out.println("Красивых слов с длиной 4 шт " + countNicks4.intValue());
         System.out.println("Красивых слов с длиной 5 шт " + countNicks5.intValue());
         System.out.println("Красивых слов всего " + countPal);
-//        System.out.println(" " + (countNicks3.intValue() + countNicks4.intValue() + countNicks5.intValue()));
+        System.out.println(" " + (countNicks3.intValue() + countNicks4.intValue() + countNicks5.intValue()));
 
 
     }
