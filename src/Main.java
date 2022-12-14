@@ -50,26 +50,12 @@ public class Main {
     }
 
     static boolean isPalindrome(String word) {
-        int i1 = 0;
-        int i2 = word.length() - 1;
-
         if (isOneChar(word)) {
             return false;
+        } else {
+            return word.equals(new StringBuilder(word).reverse().toString());
         }
-
-        while (i2 > i1) {
-            if (word.charAt(i1) != word.charAt(i2)) {
-                return false;
-            }
-            ++i1;
-            --i2;
-        }
-        for (int i = 0; i < word.length() / 2; i++) {
-            if (word.charAt(i) > word.charAt(i + 1)) {
-                return false;
-            }
-        }
-        return true;
+      
     }
 
     public static boolean isBeautifulNick(String word) {
@@ -117,8 +103,6 @@ public class Main {
     }
 
 
-
-
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 
         Random random = new Random();
@@ -141,11 +125,11 @@ public class Main {
             threads.add(new Thread(new CountNicks(ch)));
         }
 
-        for(Thread tr : threads) {
+        for (Thread tr : threads) {
             tr.start();
         }
 
-        for(Thread tr : threads) {
+        for (Thread tr : threads) {
             tr.join();
         }
 
